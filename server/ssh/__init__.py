@@ -1,1 +1,1 @@
-from .ssh_server import SSHServerInterface
+from .ssh_interface import SSHServerInterface
