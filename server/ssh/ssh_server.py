@@ -62,7 +62,7 @@ class SSHServer(BaseServer):
 
 		while True:
 			command = self.emul_term.recv_command(1024)
-			request = self.executor(command)
+			request = self.executor.execute(command)
 			self.emul_term.send(request)
 
 			# print(request)
