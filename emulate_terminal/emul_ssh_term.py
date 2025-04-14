@@ -13,7 +13,7 @@ class EmulateSSHTerminal(BaseEmulateTerminal):
 		self.channel = new_channel
 
 	def send(self, data: str):
-		self.channel.send(f"{data}\n{self.get_ps1()}")
+		self.channel.send(f"\r{data}\n{self.get_ps1()}")
 
 	def clear_buffer(self):
 		self.buffer = ""
@@ -30,7 +30,7 @@ class EmulateSSHTerminal(BaseEmulateTerminal):
 				continue
 
 			if data == b'\r':
-				self.channel.send(f'\n{self.get_ps1()}')
+				self.channel.send('\n')
 				break
 
 			self.channel.send(data)

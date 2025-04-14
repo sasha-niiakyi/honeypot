@@ -2,5 +2,5 @@ from .base_executor import BaseExecutor
 
 
 class SimpleExecutor(BaseExecutor):
-	def execute(self) -> str:
-		return 'executed'
+	def execute(self, command: str) -> str:
+		return f'executed {command}'
