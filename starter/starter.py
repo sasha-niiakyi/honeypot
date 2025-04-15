@@ -23,4 +23,5 @@ class Starter(BaseStarter):
 		
 		while True:
 			client, addr = server_socket.accept()
+			logger.warning(f"New connection: {addr[0]}:{addr[1]}, client - {client}")
 			threading.Thread(target=self.server.handle_client, args=(client,)).start()
