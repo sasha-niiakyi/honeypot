@@ -24,12 +24,12 @@ class EmulateSSHTerminal(BaseEmulateTerminal):
 		while True:
 			data = self.channel.recv(value)
 
-			if data == b'\x7f':
+			if data == b'\x7f': # backspace
 				self.buffer = self.buffer[:-1]
 				self.channel.send('\b \b')
 				continue
 
-			if data == b'\r':
+			if data == b'\r': # enter
 				self.channel.send('\n')
 				break
 
