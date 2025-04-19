@@ -17,11 +17,14 @@ class SSHServer(BaseServer):
 		emul_term: BaseEmulateTerminal, 
 		executor: BaseExecutor, 
 		out: BaseOutHandler,
+		login: str = '',
+		password: str = ''
 	):
 		self.emul_term = emul_term
 		self.executor = executor
 		self.out = out
 		self.host_key = paramiko.RSAKey(filename=path_key)
+		self.server_interface = SSHServerInterface(login, password)
 		self.name = 'SSH'
 		self.server_banner = "Welcome to Ubuntu 22.04.3 LTS (GNU/Linux 5.15.0-89-generic x86_64)\n"
 		self.protocol_banner = "SSH-2.0-OpenSSH_8.9p1 Ubuntu-3ubuntu0.5"
@@ -49,10 +52,9 @@ class SSHServer(BaseServer):
 		return transport
 
 	def _start_server_interface(self, transport: paramiko.Transport):
-		server_interface = SSHServerInterface()
-		transport.start_server(server=server_interface)
+		transport.start_server(server=self.server_interface)
 
-		return server_interface
+		return self.server_interface
 
 	def _accept_channel(self, transport: paramiko.Transport, seconds_wait: int = 20) -> paramiko.Channel:
 		# wait client
@@ -86,6 +88,7 @@ class SSHServer(BaseServer):
 			return
 
 		self.emul_term.set_channel(channel)
+		self.emul_term.set_ps1(server_interface.login, socket[0])
 
 		self.emul_term.send(self.server_banner)
 
@@ -93,7 +96,10 @@ class SSHServer(BaseServer):
 			command = self.emul_term.recv_command(1024)
 			logger.info(self.gen_log(session_id, f'Entered command - {command}'))
 
-			request = self.executor.execute(command)
+			if command == 'exit':
+				break
+
+			request = self.executor.execute(command, self.emul_term.get_pwd())
 			logger.info(self.gen_log(session_id, f'Get request - {request}'))
 
 			self.emul_term.send(request)
