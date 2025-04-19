@@ -20,6 +20,7 @@ class SSHServerInterface(paramiko.ServerInterface):
         logger.info(f'Bot uses username: {username}, password: {password}')
 
         if not self.login or not self.password:
+            self.login = username
             return paramiko.AUTH_SUCCESSFUL
 
         if self.login == username and self.password == password:
