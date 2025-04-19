@@ -1,17 +1,19 @@
 from starter import Starter 
 from server.ssh import SSHServer
 from output import FileOutHandler
-from executor import SimpleExecutor
+from executor import SimpleExecutor, LocalExecutor
 from emulate_terminal import EmulateSSHTerminal
 
 
 emul_term = EmulateSSHTerminal()
-executor = SimpleExecutor()
+executor = LocalExecutor()
 out = FileOutHandler()
 ssh_server = SSHServer("server/ssh/ssh_keys/fake_ssh_host_key", emul_term, executor, out)
 
 starter = Starter(ssh_server)
-starter.start_server()
+starter.start_server(listen_number=1)
+
+
 
 
 
