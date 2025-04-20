@@ -1,0 +1,23 @@
+client:
+    login: null
+    password: null
+
+server:
+    host: "127.0.0.1"
+    port: 2222
+    listen_number: 1
+
+service:
+    emulate_terminal: "EmulateSSHTerminal"
+    executor: "LocalExecutor" # SimpleExecutor | in future: (SSHExecutor)
+    output: "SocketOutHandler" # FileOutHandler | in future:(TelegramOutHandler, TerminalOutHandler)
+    server: "SSHServer" # in future: (HTTPServer, FTPServer)
+    starter: "Starter"
+
+socket_out:
+    server_ip: "127.0.0.1"
+    server_port: 2525
+
+path:
+    ssh_keys_path: "server/ssh/ssh_keys/fake_ssh_host_key"
+    file_out_path: "output/out.txt"

@@ -2,3 +2,4 @@ __pycache__
 .env
 *.log
 *.txt
+fake_ssh_host_key*
