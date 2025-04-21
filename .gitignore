@@ -1,5 +1,5 @@
 __pycache__
 .env
 *.log
-*.txt
+out.txt
 fake_ssh_host_key*
