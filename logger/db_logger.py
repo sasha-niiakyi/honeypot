@@ -7,14 +7,18 @@ from .data_log import DataLog
 
 class DataBaseLogger(BaseLogger):
 
-	def __init__(self, datalog: DataLog, db_path: str = 'logger/database/honey.db', name_table: str = 'honey'):
+	def __init__(self, datalog: Optional[DataLog] = None, db_path: str = 'logger/database/honey.db', name_table: str = 'honey'):
 		self.datalog = datalog
 		self.name_table = name_table
 		self.conn = sqlite3.connect(db_path)
 		self._create_table()
 
+	def set_datalog(self, datalog: DataLog):
+		self.datalog = datalog
+
 	def update(self, **kwargs):
-		self.datalog.update(**kwargs)
+		if self.datalog:
+			self.datalog.update(**kwargs)
 
 	def get_session_id(self) -> str:
 		return self.datalog.get_session_id()

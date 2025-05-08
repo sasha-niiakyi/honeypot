@@ -8,7 +8,10 @@ from .data_log import DataLog
 
 class FileLogger(BaseLogger):
 
-	def __init__(self, datalog: DataLog):
+	def __init__(self, datalog: Optional[DataLog] = None):
+		self.datalog = datalog
+
+	def set_datalog(self, datalog: DataLog):
 		self.datalog = datalog
 
 	def log(self, message: Optional[str], data: Optional[Union[DataLog, dict]] = None, level: Optional[str] = 'INFO'):
@@ -20,7 +23,8 @@ class FileLogger(BaseLogger):
 		logger.log(level, f"message: {message}, data: [ {data} ]")
 
 	def update(self, **kwargs):
-		self.datalog.update(**kwargs)
+		if self.datalog:
+			self.datalog.update(**kwargs)
 
 	def get_session_id(self) -> str:
 		return self.datalog.get_session_id()
