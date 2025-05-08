@@ -10,7 +10,7 @@ class DataBaseLogger(BaseLogger):
 	def __init__(self, datalog: Optional[DataLog] = None, db_path: str = 'logger/database/honey.db', name_table: str = 'honey'):
 		self.datalog = datalog
 		self.name_table = name_table
-		self.conn = sqlite3.connect(db_path)
+		self.conn = sqlite3.connect(db_path, check_same_thread=False)
 		self._create_table()
 
 	def set_datalog(self, datalog: DataLog):
