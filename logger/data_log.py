@@ -18,6 +18,9 @@ class DataLog:
 		self.command = command or self.command
 		self.timestamp = datetime.utcnow().isoformat()
 
+	def get_session_id(self) -> str:
+		return str(self.session_id)
+
 	def to_dict(self):
 		return {
 			**asdict(self),

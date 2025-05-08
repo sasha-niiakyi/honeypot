@@ -15,3 +15,6 @@ class BaseLogger(ABC):
 		'''Update DataLog'''
 		pass
 
+	@abstractmethod
+	def get_session_id(self) -> str:
+		pass

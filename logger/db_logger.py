@@ -16,6 +16,9 @@ class DataBaseLogger(BaseLogger):
 	def update(self, **kwargs):
 		self.datalog.update(**kwargs)
 
+	def get_session_id(self) -> str:
+		return self.datalog.get_session_id()
+
 	def close(self):
 		self.conn.close()
 
