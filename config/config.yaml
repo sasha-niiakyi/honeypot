@@ -3,21 +3,23 @@ client:
     password: null
 
 server:
-    host: "127.0.0.1"
+    host: "0.0.0.0"
     port: 2222
     listen_number: 1
 
 service:
     emulate_terminal: "EmulateSSHTerminal"
     executor: "LocalExecutor" # SimpleExecutor | in future: (SSHExecutor)
-    output: "SocketOutHandler" # FileOutHandler | in future:(TelegramOutHandler, TerminalOutHandler)
+    output: "FileOutHandler" # FileOutHandler, SocketOutHandler | in future:(TelegramOutHandler, TerminalOutHandler)
+    logger: "FileLogger" # DataBaseLogger
     server: "SSHServer" # in future: (HTTPServer, FTPServer)
     starter: "Starter"
 
 socket_out:
-    server_ip: "127.0.0.1"
+    server_ip: "172.17.0.1"
     server_port: 2525
 
 path:
     ssh_keys_path: "server/ssh/ssh_keys/fake_ssh_host_key"
     file_out_path: "output/out.txt"
+    logging_path: 'logger/logs/honey.db'

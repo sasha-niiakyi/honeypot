@@ -3,3 +3,4 @@ __pycache__
 *.log
 out.txt
 fake_ssh_host_key*
+*.db
