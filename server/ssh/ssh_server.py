@@ -8,7 +8,7 @@ from emulate_terminal import BaseEmulateTerminal
 from executor import BaseExecutor
 from output import BaseOutHandler
 from server import BaseServer
-from logger import logger
+from logger import BaseLogger
 
 
 class SSHServer(BaseServer):
@@ -17,14 +17,16 @@ class SSHServer(BaseServer):
 		emul_term: BaseEmulateTerminal, 
 		executor: BaseExecutor, 
 		out: BaseOutHandler,
+		logger: BaseLogger,
 		login: str = '',
 		password: str = ''
 	):
 		self.emul_term = emul_term
 		self.executor = executor
 		self.out = out
+		self.logger = logger
 		self.host_key = paramiko.RSAKey(filename=path_key)
-		self.server_interface = SSHServerInterface(login, password)
+		self.server_interface = SSHServerInterface(logger, login=login, password=password)
 		self.name = 'SSH'
 		self.server_banner = "Welcome to Ubuntu 22.04.3 LTS (GNU/Linux 5.15.0-89-generic x86_64)\n"
 		self.protocol_banner = "SSH-2.0-OpenSSH_8.9p1 Ubuntu-3ubuntu0.5"
@@ -67,14 +69,14 @@ class SSHServer(BaseServer):
 	def gen_log(self, session_id: str, data: str) -> str:
 		return f"Client: {session_id}, data: {data}"
 
-	# create another class Session
-	def generate_session_id(self, socket: list):
-		return uuid.uuid5(uuid.NAMESPACE_DNS, f'{socket[0]}:{socket[1]}')
+	# # create another class Session
+	# def generate_session_id(self, socket: list):
+	# 	return uuid.uuid5(uuid.NAMESPACE_DNS, f'{socket[0]}:{socket[1]}')
 
 	def handle_client(self, client: socket.socket, seconds_wait: int = 20):
 		socket = client.getpeername()
 		self.out.log_ip(socket[0])
-		session_id = self.generate_session_id(socket)
+		session_id = self.logger.get_session_id()
 		self.out.log_session_id(session_id, socket)
 
 		transport = self._setup_transport(client)
@@ -94,13 +96,17 @@ class SSHServer(BaseServer):
 
 		while True:
 			command = self.emul_term.recv_command(1024)
-			logger.info(self.gen_log(session_id, f'Entered command - {command}'))
+
+			self.logger.update(event_type='exec_command', command=command)
+			self.logger.log(f'Entered command - {command}')
 
 			if command == 'exit':
 				break
 
 			request = self.executor.execute(command, self.emul_term.get_pwd())
-			logger.info(self.gen_log(session_id, f'Get request - {request}'))
+
+			self.logger.update(event_type='get_response', command=None)
+			self.logger.log(f'Get response - {request}')
 
 			self.emul_term.send(request)
 

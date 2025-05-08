@@ -1,13 +1,14 @@
 import paramiko
 import threading
 
-from logger import logger
+from logger import BaseLogger
 
 
 class SSHServerInterface(paramiko.ServerInterface):
-    def __init__(self, login: str = '', password: str = ''):
+    def __init__(self, logger: BaseLogger, login: str = '', password: str = ''):
         self.login = login
         self.password = password
+        self.logger = logger
 
         self.event = threading.Event()
     
@@ -17,7 +18,8 @@ class SSHServerInterface(paramiko.ServerInterface):
         return paramiko.OPEN_FAILED_ADMINISTRATIVELY_PROHIBITED
 
     def check_auth_password(self, username, password):
-        logger.info(f'Bot uses username: {username}, password: {password}')
+        self.update(event_type='SSH login')
+        self.logger.log(f'Bot entered username: {username}, password: {password}', level='INFO')
 
         if not self.login or not self.password:
             self.login = username
