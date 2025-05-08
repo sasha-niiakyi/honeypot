@@ -3,15 +3,16 @@ import threading
 
 from .base_starter import BaseStarter
 from server import BaseServer
-from logger import logger
+from logger import BaseLogger, DataLog
 
 
 class Starter(BaseStarter):
-	def __init__(self, server: BaseServer, host="0.0.0.0", port=2222):
+	def __init__(self, server: BaseServer, logger: BaseLogger, host="0.0.0.0", port=2222):
 		self.host = host
 		self.port = port
 		self.socket = (host, port)
 		self.server = server
+		self.logger = logger
 
 	def start_server(self, listen_number: int = 100):
 		server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -19,9 +20,14 @@ class Starter(BaseStarter):
 		server_socket.bind(self.socket)
 		server_socket.listen(listen_number)
 
-		logger.debug(f"Server {self.server.get_name()} running at {self.host}:{self.port}")
+		#self.logger.log(f"Server {self.server.get_name()} running at {self.host}:{self.port}", level='DEBUG')
 		
 		while True:
 			client, addr = server_socket.accept()
-			logger.warning(f"New connection: {addr[0]}:{addr[1]}, client - {client}")
+
+			#logging
+			datalog = DataLog(ip=addr[0], port=addr[1], event_type='SSH connect')
+			self.logger.set_datalog(datalog)
+			self.logger.log(f"New connection: {addr[0]}:{addr[1]}, client - {client}", level='WARNING')
+
 			threading.Thread(target=self.server.handle_client, args=(client,)).start()
