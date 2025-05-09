@@ -18,7 +18,7 @@ class SSHServerInterface(paramiko.ServerInterface):
         return paramiko.OPEN_FAILED_ADMINISTRATIVELY_PROHIBITED
 
     def check_auth_password(self, username, password):
-        self.update(event_type='SSH login')
+        self.logger.update(event_type='SSH login')
         self.logger.log(f'Bot entered username: {username}, password: {password}', level='INFO')
 
         if not self.login or not self.password:
