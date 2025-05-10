@@ -62,7 +62,7 @@ class BashEmulateTerminal(BaseEmulateTerminal):
 		if data == b'\r': # enter
 			self.buffer += '\n'
 
-		if data == b'\x7f' # backspace
+		if data == b'\x7f': # backspace
 			self.buffer = self.buffer[:-1]
 
 		if '\n' in self.buffer:

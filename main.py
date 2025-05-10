@@ -2,13 +2,13 @@ from starter import Starter
 from server.ssh import SSHServer
 from output import FileOutHandler, SocketOutHandler
 from executor import SimpleExecutor, LocalExecutor
-from emulate_terminal import EmulateSSHTerminal, BashEmulateTerminal
+from emulate_terminal import BashEmulateTerminal
 from config import config
 from logger import FileLogger, DataLog, DataBaseLogger
 
 
 service = {
-	"EmulateSSHTerminal": EmulateSSHTerminal,
+	"BashEmulateTerminal": BashEmulateTerminal,
     "LocalExecutor": LocalExecutor,
     "SimpleExecutor": SimpleExecutor,
     "SocketOutHandler": SocketOutHandler,

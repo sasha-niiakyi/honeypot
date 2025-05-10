@@ -1,3 +1,2 @@
-from .emul_ssh_term import EmulateSSHTerminal
 from .base_emul_term import BaseEmulateTerminal
 from .bash_emul_term import BashEmulateTerminal

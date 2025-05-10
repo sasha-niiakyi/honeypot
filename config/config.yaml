@@ -8,7 +8,7 @@ server:
     listen_number: 1
 
 service:
-    emulate_terminal: "EmulateSSHTerminal"
+    emulate_terminal: "BashEmulateTerminal"
     executor: "LocalExecutor" # SimpleExecutor | in future: (SSHExecutor)
     output: "FileOutHandler" # FileOutHandler, SocketOutHandler | in future:(TelegramOutHandler, TerminalOutHandler)
     logger: "FileLogger" # DataBaseLogger
