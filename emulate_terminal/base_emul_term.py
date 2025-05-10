@@ -7,10 +7,14 @@ class BaseEmulateTerminal(ABC):
 		pass
 
 	@abstractmethod
-	def recv_command(self, value: int):
+	def run_term(self, value: int):
 		pass
 
-	@abstractmethod
-	def get_ps1(self):
-		'''PS1 environment variable emulation'''
-		pass
+	# @abstractmethod
+	# def recv_command(self, value: int):
+	# 	pass
+
+	# @abstractmethod
+	# def get_ps1(self):
+	# 	'''PS1 environment variable emulation'''
+	# 	pass
