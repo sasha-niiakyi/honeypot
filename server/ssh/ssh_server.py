@@ -90,25 +90,11 @@ class SSHServer(BaseServer):
 			return
 
 		self.emul_term.set_channel(channel)
-		self.emul_term.set_ps1(server_interface.login, socket[0])
-
 		self.emul_term.send(self.server_banner)
+		self.emul_term.run_term(pwd='/home/{server_interface.login}')
 
-		while True:
-			command = self.emul_term.recv_command(1024)
-
-			self.logger.update(event_type='exec_command', command=command)
-			self.logger.log(f'Entered command - {command}')
-
-			if command == 'exit':
-				break
-
-			request = self.executor.execute(command, self.emul_term.get_pwd())
-
-			self.logger.update(event_type='get_response', command=None)
-			self.logger.log(f'Get response - {request}')
-
-			self.emul_term.send(request)
+		self.logger.update(event_type='SSH disconnect', command=None)
+		self.logger.log(f'Bot disconnected')
 
 		channel.close()
 		transport.close()
