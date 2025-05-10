@@ -14,6 +14,8 @@ class Starter(BaseStarter):
 		self.server = server
 		self.logger = logger
 
+		self.session_lock = threading.Semaphore(1)
+
 	def start_server(self, listen_number: int = 100):
 		server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -30,4 +32,11 @@ class Starter(BaseStarter):
 			self.logger.set_datalog(datalog)
 			self.logger.log(f"New connection: {addr[0]}:{addr[1]}, client - {client}", level='WARNING')
 
-			threading.Thread(target=self.server.handle_client, args=(client,)).start()
+			threading.Thread(
+				target=self._handle_with_lock,
+				args=(client,)
+			).start()
+
+	def _handle_with_lock(self, client):
+		with self.session_lock:
+			self.server.handle_client(client)
