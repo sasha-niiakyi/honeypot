@@ -7,7 +7,7 @@ class BaseEmulateTerminal(ABC):
 		pass
 
 	@abstractmethod
-	def run_term(self, value: int):
+	def run_term(self, pwd: str):
 		pass
 
 	# @abstractmethod

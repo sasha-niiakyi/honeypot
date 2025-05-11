@@ -13,11 +13,19 @@ from logger import BaseLogger
 
 class BashEmulateTerminal(BaseEmulateTerminal):
 
-	def __init__(self, logger: BaseLogger, channel: paramiko.Channel = None, color: bool = False):
+	def __init__(
+		self, 
+		logger: BaseLogger, 
+		channel: paramiko.Channel = None, 
+		time_to_block: int = 600, 
+		color: bool = False
+	):
 		self.pwd = '/home/root'
 		self.channel = channel
 		self.master_fd = None
 		self.logger = logger
+		self.time_to_block = time_to_block
+		self.now = time.time()
 		self.color = color
 		self.buffer = ""
 
@@ -63,18 +71,27 @@ class BashEmulateTerminal(BaseEmulateTerminal):
 			self.buffer += '\n'
 
 		if data == b'\x7f': # backspace
-			self.buffer = self.buffer[:-1]
+			self.buffer = self.buffer[:-2]
 
 		if '\n' in self.buffer:
 			self.logger.update(event_type='exec_command', command=self.buffer)
 			self.logger.log(f'Entered command - {self.buffer}')
 			self.clear_buffer()
 
+	def _check_time_block(self, rlist: list) -> bool:
+		if rlist:
+			self.now = time.time()
+
+		if (time.time() - self.now) > self.time_to_block:
+			return True
+
+		return False
+
 	def _run_parent(self):
 		'''master - get and send data for slave'''
 		try:
 			while True:
-				rlist, _, _ = select.select([self.master_fd, self.channel], [], [])
+				rlist, _, _ = select.select([self.master_fd, self.channel], [], [], 1)
 
 				if self.master_fd in rlist:
 					try:
@@ -98,6 +115,9 @@ class BashEmulateTerminal(BaseEmulateTerminal):
 						os.write(self.master_fd, data)
 					except OSError:
 						break
+
+				if self._check_time_block(rlist):
+					break
 
 		finally:
 			os.close(self.master_fd)
