@@ -4,7 +4,7 @@ from output import FileOutHandler, SocketOutHandler
 from executor import SimpleExecutor, LocalExecutor
 from emulate_terminal import BashEmulateTerminal
 from config import config
-from logger import FileLogger, DataLog, DataBaseLogger
+from logger import FileLogger, DataLog, DataBaseLogger, DataBaseFileLogger
 
 
 service = {
@@ -15,6 +15,7 @@ service = {
     "FileOutHandler": FileOutHandler,
     "FileLogger": FileLogger,
     "DataBaseLogger": DataBaseLogger,
+    "DataBaseFileLogger": DataBaseFileLogger,
     "SSHServer": SSHServer,
     "Starter": Starter,
 }
@@ -22,7 +23,10 @@ service = {
 #emul_term = service[config.data.service.emulate_terminal]()
 executor = service[config.data.service.executor]()
 logger = service[config.data.service.logger]()
-emul_term = BashEmulateTerminal(logger)
+emul_term = BashEmulateTerminal(
+	logger=logger, 
+	time_to_block=config.data.emulate_terminal.time_to_block, 
+	color=config.data.emulate_terminal.color)
 
 if config.data.service.output == "SocketOutHandler":
 	out = SocketOutHandler(config.data.socket_out.server_ip, config.data.socket_out.server_port)
@@ -42,7 +46,9 @@ if config.data.service.server == "SSHServer":
 	)
 
 starter = service[config.data.service.starter](
-	server, logger, host=config.data.server.host, 
+	server, 
+	logger, 
+	host=config.data.server.host, 
 	port=config.data.server.port
 )
 starter.start_server(listen_number=config.data.server.listen_number)

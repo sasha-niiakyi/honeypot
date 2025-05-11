@@ -5,18 +5,22 @@ client:
 server:
     host: "0.0.0.0"
     port: 2222
-    listen_number: 1
+    listen_number: 1 # no need
 
 service:
     emulate_terminal: "BashEmulateTerminal"
-    executor: "LocalExecutor" # SimpleExecutor | in future: (SSHExecutor)
-    output: "FileOutHandler" # FileOutHandler, SocketOutHandler | in future:(TelegramOutHandler, TerminalOutHandler)
-    logger: "FileLogger" # DataBaseLogger
+    executor: "LocalExecutor" # SimpleExecutor no need
+    output: "FileOutHandler" # FileOutHandler, SocketOutHandler | in future:(TelegramOutHandler)
+    logger: "DataBaseFileLogger" # FileLogger, DataBaseLogger
     server: "SSHServer" # in future: (HTTPServer, FTPServer)
     starter: "Starter"
 
+emulate_terminal:
+    color: False #no need
+    time_to_block: 3600 # seconds
+
 socket_out:
-    server_ip: "172.17.0.1"
+    server_ip: "127.0.0.1"
     server_port: 2525
 
 path:
