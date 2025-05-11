@@ -11,6 +11,10 @@ class BaseLogger(ABC):
 		pass
 
 	@abstractmethod
+	def set_datalog(self, datalog: DataLog):
+		pass
+
+	@abstractmethod
 	def update(self, **kwargs):
 		'''Update DataLog'''
 		pass

@@ -3,3 +3,4 @@ from .file_logger import FileLogger
 from .data_log import DataLog
 from .db_logger import DataBaseLogger
 from .base_logger import BaseLogger
+from .db_file_logger import DataBaseFileLogger
