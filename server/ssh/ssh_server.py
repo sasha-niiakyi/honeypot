@@ -19,7 +19,9 @@ class SSHServer(BaseServer):
 		out: BaseOutHandler,
 		logger: BaseLogger,
 		login: str = '',
-		password: str = ''
+		password: str = '',
+		server_banner: str = None,
+		protocol_banner: str = None
 	):
 		self.emul_term = emul_term
 		self.executor = executor
@@ -28,8 +30,16 @@ class SSHServer(BaseServer):
 		self.host_key = paramiko.RSAKey(filename=path_key)
 		self.server_interface = SSHServerInterface(logger, login=login, password=password)
 		self.name = 'SSH'
-		self.server_banner = "Welcome to Ubuntu 22.04.3 LTS (GNU/Linux 5.15.0-89-generic x86_64)\n"
-		self.protocol_banner = "SSH-2.0-OpenSSH_8.9p1 Ubuntu-3ubuntu0.5"
+
+		if server_banner:
+			self.server_banner = server_banner
+		else:
+			self.server_banner = "Welcome to Ubuntu 22.04.3 LTS (GNU/Linux 5.15.0-89-generic x86_64)\n"
+		
+		if protocol_banner:
+			self.protocol_banner = protocol_banner
+		else:
+			self.protocol_banner = "SSH-2.0-OpenSSH_8.9p1 Ubuntu-3ubuntu0.5"
 
 	def get_name(self):
 		return self.name
