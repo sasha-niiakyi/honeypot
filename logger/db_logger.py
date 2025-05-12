@@ -7,10 +7,21 @@ from .data_log import DataLog
 
 class DataBaseLogger(BaseLogger):
 
-	def __init__(self, datalog: Optional[DataLog] = None, db_path: str = 'logger/database/honey.db', name_table: str = 'honey'):
+	def __init__(
+		self, 
+		datalog: Optional[DataLog] = None, 
+		db_path: str = 'logger/database/honey.db', 
+		name_table: str = 'honey', 
+		wal: bool = True
+	):
 		self.datalog = datalog
 		self.name_table = name_table
 		self.conn = sqlite3.connect(db_path, check_same_thread=False)
+		
+		if wal:
+			self.conn.execute("PRAGMA journal_mode=WAL;")
+			self.conn.commit()
+
 		self._create_table()
 
 	def set_datalog(self, datalog: DataLog):
